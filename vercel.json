@@ -1,9 +1,23 @@
 {
   "framework": "vite",
   "functions": {
-    "api/marche.ts": { "maxDuration": 30 },
-    "api/annonce.ts": { "maxDuration": 15 },
-    "api/import-loyers.ts": { "maxDuration": 60 }
+    "api/marche.ts": {
+      "maxDuration": 30
+    },
+    "api/annonce.ts": {
+      "maxDuration": 15
+    },
+    "api/import-loyers.ts": {
+      "maxDuration": 60
+    },
+    "api/adresse.ts": {
+      "maxDuration": 30
+    }
   },
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ]
 }

@@ -32,6 +32,10 @@ export function parseAnnonceText(raw: string): Partial<Bien> {
   if (d) out.dpe = asDpe(d[1]);
   const g = T.match(/(?:GES|gaz\s+[àa]\s+effet\s+de\s+serre|classe\s+climat)[^A-Ga-g\n]{0,25}\b([A-G])\b/i);
   if (g) out.ges = asDpe(g[1]);
+  const kwh = T.match(/(\d{1,4}(?:[,.]\d+)?)\s*kWh\s*(?:EP|ep|d'énergie primaire)?\s*\/\s*m(?:²|2)\s*(?:\/|par)\s*an/i);
+  if (kwh) out.consoEP = toNum(kwh[1]);
+  const co2 = T.match(/(\d{1,3}(?:[,.]\d+)?)\s*kg\s*(?:éq\.?|eq\.?)?\s*CO\s*2(?:\s*eq)?\s*\/\s*m(?:²|2)\s*(?:\/|par)\s*an/i);
+  if (co2) out.gesM2 = toNum(co2[1]);
 
   const c =
     T.match(/charges?(?:\s+de\s+copropri[ée]t[ée])?[^\d€\n]{0,40}(\d[\d ]{0,6})\s*€?\s*(?:\/\s*mois|par\s+mois|mensuel)/i) ||
@@ -120,6 +124,8 @@ export function fromBieniciJson(ad: any): Partial<Bien> {
     dpe: asDpe(ad.energyClassification),
     ges: asDpe(ad.greenhouseGazClassification),
     annee: toNum(ad.yearOfConstruction),
+    consoEP: toNum(ad.energyValue),
+    gesM2: toNum(ad.greenhouseGazValue),
     cp: ad.postalCode,
     ville: ad.city,
     lat: toNum(ad.blurInfo?.position?.lat ?? ad.blurInfo?.centroid?.lat),

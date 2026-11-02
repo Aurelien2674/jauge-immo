@@ -46,6 +46,7 @@ L'application fonctionne déjà **sans Supabase** (analyse + simulateurs). Supab
 
 - **Lien d'annonce** (`api/annonce.ts`) : Bien'ici est lu via son JSON public (fiable). Leboncoin, SeLoger et les autres sont lus quand leur page le permet ; s'ils bloquent (protection anti-robot), l'utilisateur colle le texte et l'extraction se fait dans le navigateur.
 - **Marché** (`api/marche.ts`) : commune trouvée via l'API Géo, ventes DVF téléchargées depuis `files.data.gouv.fr/geo-dvf` (5 dernières années), mises en cache 30 jours dans Supabase. Comparables : même type, surface ±35 %, 36 derniers mois, dans un rayon de 500 m à 1,5 km quand la position du bien est connue, sinon toute la commune.
+- **Adresse probable** (`api/adresse.ts`) : l'annonce est croisée avec la base publique des DPE de l'ADEME (DPE réalisés depuis juillet 2021) : commune, classe, surface, consommation et émissions exactes. Le rapport affiche l'adresse la plus probable avec un niveau de confiance, un lien carte / Street View, les ventes DVF déjà enregistrées à cette adresse, et permet de comparer aux ventes dans un rayon de 300 m.
 - **Calculs** : `src/lib/calc.ts` (barèmes 2026 : DMTO par département, émoluments, PTZ, HCSF). `npm test` vérifie les formules.
 
 ## Développement local

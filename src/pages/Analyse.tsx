@@ -9,6 +9,7 @@ import { pointsAVerifier } from "../lib/rules";
 import { useSession } from "../lib/session";
 import { supabase } from "../lib/supabase";
 import { Checks, DpeBar, Gauge, LineChart, NumField, SelectField } from "../components/ui";
+import { AdresseProbable } from "../components/Adresse";
 
 export default function Analyse() {
   const { id } = useParams();
@@ -124,7 +125,7 @@ export default function Analyse() {
               <NumField label="Pièces" value={bien.pieces} onChange={(v) => setB("pieces", v)} />
             </div>
             <div className="row2">
-              <label>Code postal<input inputMode="numeric" maxLength={5} value={bien.cp ?? ""} onChange={(e) => { const v = e.target.value.replace(/\D/g, ""); setBien((b) => ({ ...b, cp: v || undefined, lat: undefined, lon: undefined })); }} /></label>
+              <label>Code postal<input inputMode="numeric" maxLength={5} value={bien.cp ?? ""} onChange={(e) => { const v = e.target.value.replace(/\D/g, ""); setBien((b) => ({ ...b, cp: v || undefined, lat: undefined, lon: undefined, adresse: undefined })); }} /></label>
               <label>Ville<input value={bien.ville ?? ""} onChange={(e) => setB("ville", e.target.value || undefined)} /></label>
             </div>
             <div className="row3">
@@ -133,6 +134,15 @@ export default function Analyse() {
               <NumField label="Charges" unit="€/m" value={bien.charges} onChange={(v) => setB("charges", v)} />
             </div>
             <NumField label="Taxe foncière" unit="€/an" value={bien.taxeFonciere} onChange={(v) => setB("taxeFonciere", v)} placeholder="à demander" />
+          </fieldset>
+          <div className="divider" />
+          <fieldset><legend>Valeurs exactes du DPE (pour l'adresse)</legend>
+            <div className="row3">
+              <NumField label="Consommation" unit="kWh" value={bien.consoEP} onChange={(v) => setB("consoEP", v)} placeholder="/m²/an" />
+              <NumField label="Émissions" unit="kg" value={bien.gesM2} onChange={(v) => setB("gesM2", v)} placeholder="CO₂/m²" />
+              <SelectField label="Classe GES" value={(bien.ges ?? "") as Dpe | ""} onChange={(v) => setB("ges", (v || undefined) as Dpe | undefined)} options={[["", "?"], ...("ABCDEFG".split("").map((l) => [l, l]) as [Dpe, string][])]} />
+            </div>
+            <p className="hint">Ces chiffres figurent sous les étiquettes énergie et climat de l'annonce.</p>
           </fieldset>
           <div className="divider" />
           <fieldset><legend>Votre financement</legend>
@@ -189,6 +199,10 @@ export default function Analyse() {
               {marche.stats.perimetre === "rayon" ? `rayon de ${nf(marche.stats.rayonM! / 1000, 1)} km` : `toute la commune`} · ventes de {dateFr(marche.stats.depuis)} à {dateFr(marche.stats.jusqua)}
             </p>
           )}
+
+          <AdresseProbable bien={bien} positionUtilisee={!!bien.adresse && !!bien.lat}
+            onPosition={(lat, lon, adresse) => setBien((b) => ({ ...b, lat, lon, adresse }))} />
+          {bien.adresse && <p className="hint" style={{ marginTop: 8 }}>Ventes comparées autour de {bien.adresse}. <button type="button" className="ghost" style={{ padding: "2px 8px" }} onClick={() => setBien((b) => ({ ...b, lat: undefined, lon: undefined, adresse: undefined }))}>Revenir à toute la commune</button></p>}
 
           <div className="section-title"><h3>À vérifier avant l'offre</h3><span className="count">{points.length} points</span></div>
           <Checks points={points} />

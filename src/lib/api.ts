@@ -1,3 +1,4 @@
+import type { ResultatAdresse } from "../../shared/adresse";
 import type { Bien, Marche } from "../../shared/types";
 
 export async function lireAnnonce(url: string): Promise<{ ok: boolean; bien?: Partial<Bien>; message?: string; erreur?: string }> {
@@ -20,5 +21,15 @@ export async function chargerMarche(b: Pick<Bien, "type" | "surface" | "pieces" 
   const r = await fetch(`/api/marche?${p}`);
   const d = await r.json();
   if (!r.ok) throw new Error(d.erreur || "Données de marché indisponibles.");
+  return d;
+}
+
+export async function chercherAdresse(b: Bien): Promise<ResultatAdresse> {
+  const p = new URLSearchParams({ type: b.type, surface: String(b.surface) });
+  const opt: [string, unknown][] = [["cp", b.cp], ["ville", b.ville], ["dpe", b.dpe], ["ges", b.ges], ["conso", b.consoEP], ["gesm2", b.gesM2], ["annee", b.annee]];
+  for (const [k, v] of opt) if (v !== undefined && v !== null && v !== "") p.set(k, String(v));
+  const r = await fetch(`/api/adresse?${p}`);
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.erreur || "Recherche d'adresse indisponible.");
   return d;
 }

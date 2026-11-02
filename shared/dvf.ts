@@ -126,7 +126,7 @@ export function comparer(toutes: Vente[], c: Critere): Pick<Marche, "stats" | "p
   let withDist = cand.map((v) => ({ ...v, pm2: Math.round(v.p / v.s), distM: undefined as number | undefined }));
   if (c.lat && c.lon) {
     withDist = withDist.map((v) => ({ ...v, distM: v.la && v.lo ? Math.round(distanceM(c.lat!, c.lon!, v.la, v.lo)) : undefined }));
-    for (const r of [500, 1000, 1500]) {
+    for (const r of [300, 500, 1000, 1500]) {
       const near = withDist.filter((v) => v.distM !== undefined && v.distM <= r);
       if (near.length >= 10) { withDist = near; perimetre = "rayon"; rayonM = r; break; }
     }

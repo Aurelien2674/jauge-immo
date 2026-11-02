@@ -9,6 +9,8 @@ export interface Bien {
   pieces?: number;
   dpe?: Dpe;
   ges?: Dpe;
+  consoEP?: number; // kWh d'énergie primaire / m² / an (valeur exacte du DPE)
+  gesM2?: number; // kg CO2 / m² / an
   annee?: number;
   charges?: number; // €/mois
   taxeFonciere?: number; // €/an
@@ -16,6 +18,7 @@ export interface Bien {
   ville?: string;
   lat?: number;
   lon?: number;
+  adresse?: string; // adresse retenue (déduite des DPE)
   titre?: string;
   url?: string;
   photo?: string;
